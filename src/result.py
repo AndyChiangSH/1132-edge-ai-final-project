@@ -1,3 +1,4 @@
+import gc
 import torch
 import torch.nn as nn
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -100,6 +101,10 @@ def get_quant_config_slm(model):
     return quant_config
 
 def main():
+    gc.collect()              # Python 層級垃圾回收
+    torch.cuda.empty_cache()  # PyTorch 層級釋放未使用快取
+    torch.cuda.ipc_collect()  # 清理 inter-process memory
+    
     ############## Set Up ##############
     torch.manual_seed(0)
     random.seed(0)
@@ -131,6 +136,7 @@ def main():
 
     prepare_for_inference(model, backend=backend)
     torch.cuda.empty_cache()
+    torch.cuda.ipc_collect()
 
     warmup_prompt = "Explain what AI is."
     inputs = tokenizer(warmup_prompt, return_tensors="pt").to(device)
