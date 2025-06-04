@@ -175,3 +175,4 @@ cython_debug/
 
 # My ignore
 1132-edge-ai-final-project/
+llama3.2-3B-instruct_lora_bf16/
